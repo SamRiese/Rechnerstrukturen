@@ -37,44 +37,40 @@ main:
 init_hardware:
     @Konfiguriere GPIO Register siehe 657 / 662 / 338
     
-    @Konfiguriere Clock siehe 338 / D=5 und F=3
-    LDR r0, =(RCGC_GPIO_PORT_F | RCGC_GPIO_PORT_D) @Kombination durch bitwise OR
-    LDR r1, =RCGC_GPIO_R
-    STR r0, [r1]
+    @Konfiguriere Clock siehe 338
+    LDR r0, =RCGC_GPIO_R
+    LDR r1, [r0]
+    ORR r1, r1, RCGC_GPIO_PORT_F
+    STR r1, [r0]
 
     @Pin F4 = Button SW1 | vermutlich active low button
-    @Konfiguriere Pin F4 als digital Pin. Modus 1 oder 0 
-    MOV r0, #PIN4
-    LDR r1, =GPIO_PORT_F_DEN_R
-    STR r0, [r1]
-    
-    @Konfiguriere Pin F4 als Input 
-    MOV r2, #0
-    LDR r1, =GPIO_PORT_F_DIR_R
-    STR r2, [r1]
-
-    @Konfiguriere Pin F4 | Pullup bzw. Standartwert = 1 | Dokumentation Standartwert -> 0 
-    LDR r1, =GPIO_PORT_F_PUR_R
-    STR r0, [r1]
-    
-    @Pin Dx = LED
-    @Konfiguriere Pin D2 als digital Pin. Modus 1 oder 0 
-    MOV r0, #PIN2 @hier Pin für LED ändern
-    LDR r1, =GPIO_PORT_D_DEN_R
+    @Konfiguriere digital Pin. Modus 1 oder 0 
+    LDR r0, =GPIO_PORT_F_DEN_R
+    LDR r1, [r0]
+    ORR r1, r1, #PIN4, #PIN1, #PIN2, #PIN3
     STR r0, [r1]
 
-    @Konfiguriere Pin D2 als Input 
-    LDR r1, =GPIO_PORT_D_DIR_R
-    STR r0, [r1]   
-    
+    @Konfiguriere Pins als Input oder Ouput 
+    LDR r0, =GPIO_PORT_F_DIR_R
+    LDR r1, [r0]
+    ORR r1, r1, #(PIN1 | PIN2 | PIN3)
+    BIC r1, r1, #PIN4
+    STR r1, [r0]
 
+    @Konfiguriere Pins von F | Pullup bzw. Standartwert = 1 | Dokumentation Standartwert -> 0 
+    LDR r0, =GPIO_PORT_F_PUR_R
+    LDR r1, [r0]
+    ORR r1, r1, #(PIN1 | PIN2)
+    BIC r1, r1, #(PIN3 | PIN4)
+    STR r1, [r0]
+    
 endless_loop:
     MOV r0, #0
+    LDR r1, =33000
 
     timer:
         ADD r0, #1
-        LDR r1, =33000
-        CMP r0, r1
+        CMP r1, r0
         BGT timer
 
     LDR r1, =GPIO_PORT_F_DATA_R @lade pointer
@@ -85,14 +81,16 @@ endless_loop:
     BEQ handle_btn_pressed
 
 handle_btn_not_pressed:
-    MOV r1, #0
-    LDR r2, =GPIO_PORT_D_DATA_R
-    STR r1, [r2]
+    LDR r0, =GPIO_PORT_D_DATA_R
+    LDR r1, [r0]
+    BIC r1, r1, #(PIN3)
+    STR r1, [r0]
     b endless_loop
 
 handle_btn_pressed:
-    MOV r1, #PIN2
-    LDR r2, =GPIO_PORT_D_DATA_R
-    STR r1, [r2]
+    LDR r0, =GPIO_PORT_D_DATA_R
+    LDR r1, [r0]
+    ORR r1, r1, #(PIN3)
+    STR r1, [r0]    
     b endless_loop
 .end
