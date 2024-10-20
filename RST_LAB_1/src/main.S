@@ -62,12 +62,12 @@ init_hardware:
     LDR r1, [r0]
     ORR r1, r1, #(PIN1 | PIN2)
     BIC r1, r1, #(PIN3 | PIN4)
-    STR r1, [r0]
-    
+    STR r1, [r0] 
+
 endless_loop:
     MOV r0, #0
-    LDR r1, =33000
-
+    LDR r1, =(16000000/3) @16MHz
+    
     timer:
         ADD r0, #1
         CMP r1, r0
