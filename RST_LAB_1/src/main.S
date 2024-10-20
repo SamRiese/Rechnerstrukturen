@@ -47,7 +47,7 @@ init_hardware:
     @Konfiguriere digital Pin. Modus 1 oder 0 
     LDR r0, =GPIO_PORT_F_DEN_R
     LDR r1, [r0]
-    ORR r1, r1, #PIN4, #PIN1, #PIN2, #PIN3
+    ORR r1, r1, #(PIN4 | PIN1 | PIN2 | PIN3)
     STR r0, [r1]
 
     @Konfiguriere Pins als Input oder Ouput 
