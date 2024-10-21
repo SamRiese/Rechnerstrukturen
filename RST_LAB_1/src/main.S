@@ -43,7 +43,6 @@ init_hardware:
     ORR r1, r1, RCGC_GPIO_PORT_F
     STR r1, [r0]
 
-    @Pin F4 = Button SW1 | vermutlich active low button
     @Konfiguriere digital Pin. Modus 1 oder 0 
     LDR r0, =GPIO_PORT_F_DEN_R
     LDR r1, [r0]
@@ -57,11 +56,11 @@ init_hardware:
     BIC r1, r1, #PIN4
     STR r1, [r0]
 
-    @Konfiguriere Pins von F | Pullup bzw. Standartwert = 1 | Dokumentation Standartwert -> 0 
+    @Konfiguriere Pins von F | Pullup | active low
     LDR r0, =GPIO_PORT_F_PUR_R
     LDR r1, [r0]
-    ORR r1, r1, #(PIN1 | PIN2)
-    BIC r1, r1, #(PIN3 | PIN4)
+    ORR r1, r1, #PIN4
+    BIC r1, r1, #(PIN1 | PIN2 | PIN3)
     STR r1, [r0] 
 
 endless_loop:
@@ -81,16 +80,17 @@ endless_loop:
     BEQ handle_btn_pressed
 
 handle_btn_not_pressed:
-    LDR r0, =GPIO_PORT_D_DATA_R
+    LDR r0, =GPIO_PORT_F_DATA_R
     LDR r1, [r0]
-    BIC r1, r1, #(PIN3)
+    ORR r1, r1, #(PIN1 | PIN2)
+    BIC r1, r1, #PIN3
     STR r1, [r0]
     b endless_loop
 
 handle_btn_pressed:
-    LDR r0, =GPIO_PORT_D_DATA_R
+    LDR r0, =GPIO_PORT_F_DATA_R
     LDR r1, [r0]
-    ORR r1, r1, #(PIN3)
+    ORR r1, r1, #(PIN1 | PIN2 | PIN3)
     STR r1, [r0]    
     b endless_loop
 .end
