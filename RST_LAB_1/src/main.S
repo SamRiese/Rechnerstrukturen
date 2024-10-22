@@ -29,6 +29,8 @@
 .equ PIN7, 0x80
 .equ ALL_PINS, 0xFF
 
+.equ BIT_SHIFT_INIT_VALUE, 0x80000000
+
 .section .text
 .global main
 .align
