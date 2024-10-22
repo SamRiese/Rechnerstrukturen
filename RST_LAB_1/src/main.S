@@ -65,6 +65,8 @@ init_hardware:
     ORR r1, #(PIN4 | PIN1 | PIN2 | PIN3)
     STR r1, [r0]
 
+    LDR r7, =BIT_SHIFT_INIT_VALUE
+
 endless_loop:
     MOV r0, #0
     LDR r1, =(16000000/3) @16MHz
@@ -87,6 +89,11 @@ handle_btn_not_pressed:
     ORR r1, r1, #(PIN1 | PIN2)
     BIC r1, r1, #PIN3
     STR r1, [r0]
+
+    LSL r7, 1
+
+    CMP r7, 0x0
+    BEQ reset_to_last_bit
     b endless_loop
 
 handle_btn_pressed:
@@ -94,5 +101,18 @@ handle_btn_pressed:
     LDR r1, [r0]
     ORR r1, r1, #(PIN1 | PIN2 | PIN3)
     STR r1, [r0]    
+
+    LSR r7, 1
+
+    CMP r7, 0x0
+    BEQ reset_to_first_bit
+    b endless_loop
+
+reset_to_first_bit:
+    LDR r7, =BIT_SHIFT_INIT_VALUE
+    b endless_loop
+
+reset_to_last_bit:
+    MOV r7, 0x1
     b endless_loop
 .end
