@@ -8,19 +8,19 @@
         {
             "name": "PlatformIO",
             "includePath": [
-                "/home/sam/Projects/platformio_workspace/RST_LAB_1/include",
-                "/home/sam/Projects/platformio_workspace/RST_LAB_1/src",
-                "/home/sam/.platformio/packages/framework-libopencm3",
-                "/home/sam/.platformio/packages/framework-libopencm3/include",
+                "C:/Users/sdrie/Documents/Rechnerstrukturen/RST_LAB_1/include",
+                "C:/Users/sdrie/Documents/Rechnerstrukturen/RST_LAB_1/src",
+                "C:/Users/sdrie/.platformio/packages/framework-libopencm3",
+                "C:/Users/sdrie/.platformio/packages/framework-libopencm3/include",
                 ""
             ],
             "browse": {
                 "limitSymbolsToIncludedHeaders": true,
                 "path": [
-                    "/home/sam/Projects/platformio_workspace/RST_LAB_1/include",
-                    "/home/sam/Projects/platformio_workspace/RST_LAB_1/src",
-                    "/home/sam/.platformio/packages/framework-libopencm3",
-                    "/home/sam/.platformio/packages/framework-libopencm3/include",
+                    "C:/Users/sdrie/Documents/Rechnerstrukturen/RST_LAB_1/include",
+                    "C:/Users/sdrie/Documents/Rechnerstrukturen/RST_LAB_1/src",
+                    "C:/Users/sdrie/.platformio/packages/framework-libopencm3",
+                    "C:/Users/sdrie/.platformio/packages/framework-libopencm3/include",
                     ""
                 ]
             },
@@ -35,7 +35,7 @@
             ],
             "cStandard": "gnu11",
             "cppStandard": "gnu++11",
-            "compilerPath": "/home/sam/.platformio/packages/toolchain-gccarmnoneeabi/bin/arm-none-eabi-gcc",
+            "compilerPath": "C:/Users/sdrie/.platformio/packages/toolchain-gccarmnoneeabi/bin/arm-none-eabi-gcc.exe",
             "compilerArgs": [
                 "-mthumb",
                 "-mcpu=cortex-m4",

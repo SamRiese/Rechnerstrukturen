@@ -35,33 +35,33 @@
 
 main:   
 init_hardware:
-    @Konfiguriere GPIO Register siehe 657 / 662 / 338
+    //Konfiguriere GPIO Register siehe 657 / 662 / 338
     
-    @Konfiguriere Clock siehe 338
+    //Konfiguriere Clock siehe 338
     LDR r0, =RCGC_GPIO_R
     LDR r1, [r0]
     ORR r1, r1, RCGC_GPIO_PORT_F
     STR r1, [r0]
 
-    @Konfiguriere Pins als Input oder Ouput 
+    //Konfiguriere Pins als Input oder Ouput 
     LDR r0, =GPIO_PORT_F_DIR_R
     LDR r1, [r0]
     ORR r1, r1, #(PIN1 | PIN2 | PIN3)
     BIC r1, r1, #PIN4
     STR r1, [r0]
 
-    @Konfiguriere Pins von F | Pullup | active low
+    //Konfiguriere Pins von F | Pullup | active low
     LDR r0, =GPIO_PORT_F_PUR_R
     LDR r1, [r0]
     ORR r1, r1, #PIN4
     BIC r1, r1, #(PIN1 | PIN2 | PIN3)
     STR r1, [r0] 
 
-    @Konfiguriere digital Pin. Modus 1 oder 0 
+    //Konfiguriere digital Pin. Modus 1 oder 0 
     LDR r0, =GPIO_PORT_F_DEN_R
     LDR r1, [r0]
-    ORR r1, r1, #(PIN4 | PIN1 | PIN2 | PIN3)
-    STR r0, [r1]
+    ORR r1, #(PIN4 | PIN1 | PIN2 | PIN3)
+    STR r1, [r0]
 
 endless_loop:
     MOV r0, #0
@@ -72,8 +72,8 @@ endless_loop:
         CMP r1, r0
         BGT timer
 
-    LDR r1, =GPIO_PORT_F_DATA_R @lade pointer
-    LDR r2, [r1] @dereference pointer 
+    LDR r1, =GPIO_PORT_F_DATA_R //lade pointer
+    LDR r2, [r1] //dereference pointer 
     AND r3, r2, #PIN4
 
     CMP r3, #0
