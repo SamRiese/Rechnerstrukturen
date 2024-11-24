@@ -69,7 +69,7 @@ init_hardware:
 
 endless_loop:
     MOV r0, #0
-    LDR r1, =(16000000/3) @16MHz
+    LDR r1, =(16000000/3) 
     
     timer:
         ADD r0, #1
