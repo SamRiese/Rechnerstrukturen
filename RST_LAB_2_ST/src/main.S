@@ -82,21 +82,66 @@ init_hardware:
 
     LDR r0, =ST_CTRL_R
     LDR r1, [r0]
-    ORR r1, #(ST_CTRL_ENABLE | ST_CTRL_CLK_SRC | ST_CTRL_INTEN ) 
-    LDR r1, [r0] 
+    ORR r1, r1, #(ST_CTRL_ENABLE | ST_CTRL_CLK_SRC)
+    BIC r1, ST_CTRL_INTEN 
+    STR r1, [r0] 
 
     LDR r0, =ST_RELOAD_R
     LDR r1, [r0]
-    ORR 
+    ORR r1, r1, =15999 //16Mhz / 1000 -1
+    STR r1, [r0]
 
-
+    B LR
 .thumb_func
 sys_tick_handler:
-// call this method every millisecond, dictated by the SysTick
+// call this method every millisecond, dictated by the SysTick    
+    //pushe benutze register zum Stack LR 
+    LDR r0, =ms
+    LDR r1, [r0]
+    ADD r1, r1, 1
+
+    CMP r1, 1000
+    BNE LR
+
+    LDR r0, =ms
+    LDR r1, [r0]
+    MOV r1, 0
+    STR r1, [r0]  
+
+    LDR r0, =GPIO_PORT_F_DATA_R
+    LDR r1, [r0]
+
+    //EOR
+    AND r2, r1, #(LED_R | LED_G | LED_B)
+    CMP r2, 0
+    BEQ activate_led
+    
+    deactivate_led:
+    BIC r1, r1, #(LED_R | LED_G | LED_B)
+    STR r1, [r0]
+
+
+    activate_led:
+    ORR r1, r1, #(LED_R | LED_G | LED_B)
+    STR r1, [r0]
+
+    B LR
+
+
+
 
 main: // here the actual program starts; you might want to call init_hardware
-    mov r1, BIT5 | BIT10 // this is a example of how you can use bitwise or operations on the right side; this also works in equ directives
+    BL init_hardware
+    //mov r1, BIT5 | BIT10 // this is a example of how you can use bitwise or operations on the right side; this also works in equ directives
 
 main_loop:
 // create an infinite loop here
+    LDR r0, =ST_CTRL_COUNT 
+    LDR r1, [r0]
+
+    CMP r1, 1
+    BNE main_loop
+    
+    BL sys_tick_handler
+    B main_loop
 .end
