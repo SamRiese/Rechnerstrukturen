@@ -60,6 +60,35 @@ ms:
 
 init_hardware:
 // here you can init your hardware
+    LDR r0, =RCGC_GPIO_R
+    LDR r1, [r0]
+    ORR r1, r1, RCGC_GPIO_PORT_F
+    STR r1, [r0]
+
+    LDR r0, =GPIO_PORT_F_DIR_R
+    LDR r1, [r0]
+    ORR r1, r1, #(LED_R | LED_B | LED_G)
+    STR r1, [r0]
+
+    LDR r0, =GPIO_PORT_F_PUR_R
+    LDR r1, [r0]
+    BIC r1, r1, #(LED_R | LED_B | LED_G)
+    STR r1, [r0] 
+
+    LDR r0, =GPIO_PORT_F_DEN_R
+    LDR r1, [r0]
+    ORR r1, #(LED_R | LED_B | LED_G)
+    STR r1, [r0]
+
+    LDR r0, =ST_CTRL_R
+    LDR r1, [r0]
+    ORR r1, #(ST_CTRL_ENABLE | ST_CTRL_CLK_SRC)
+    BIC r1, r1, ST_CTRL_INTEN 
+
+    LDR r0, =ST_RELOAD_R
+    LDR r1, [r0]
+    ORR 
+
 
 .thumb_func
 sys_tick_handler:
