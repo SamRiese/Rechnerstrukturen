@@ -82,8 +82,8 @@ init_hardware:
 
     LDR r0, =ST_CTRL_R
     LDR r1, [r0]
-    ORR r1, #(ST_CTRL_ENABLE | ST_CTRL_CLK_SRC)
-    BIC r1, r1, ST_CTRL_INTEN 
+    ORR r1, #(ST_CTRL_ENABLE | ST_CTRL_CLK_SRC | ST_CTRL_INTEN ) 
+    LDR r1, [r0] 
 
     LDR r0, =ST_RELOAD_R
     LDR r1, [r0]
