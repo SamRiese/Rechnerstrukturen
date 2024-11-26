@@ -60,6 +60,8 @@ ms:
 
 init_hardware:
 // here you can init your hardware
+    PUSH {r0, r1, r2, LR}
+
     LDR r0, =RCGC_GPIO_R
     LDR r1, [r0]
     ORR r1, r1, RCGC_GPIO_PORT_F
@@ -67,68 +69,57 @@ init_hardware:
 
     LDR r0, =GPIO_PORT_F_DIR_R
     LDR r1, [r0]
-    ORR r1, r1, #(LED_R | LED_B | LED_G)
+    ORR r1, r1, #LED_R | LED_B | LED_G
     STR r1, [r0]
 
     LDR r0, =GPIO_PORT_F_PUR_R
     LDR r1, [r0]
-    BIC r1, r1, #(LED_R | LED_B | LED_G)
+    BIC r1, r1, #LED_R | LED_B | LED_G
     STR r1, [r0] 
 
     LDR r0, =GPIO_PORT_F_DEN_R
     LDR r1, [r0]
-    ORR r1, #(LED_R | LED_B | LED_G)
+    ORR r1, #LED_R | LED_B | LED_G
     STR r1, [r0]
 
     LDR r0, =ST_CTRL_R
     LDR r1, [r0]
-    ORR r1, r1, #(ST_CTRL_ENABLE | ST_CTRL_CLK_SRC)
+    ORR r1, r1, #ST_CTRL_ENABLE | ST_CTRL_CLK_SRC
     BIC r1, ST_CTRL_INTEN 
     STR r1, [r0] 
 
     LDR r0, =ST_RELOAD_R
     LDR r1, [r0]
-    ORR r1, r1, =15999 //16Mhz / 1000 -1
+    LDR r2, =15999
+    ORR r1, r1, r2 //16Mhz / 1000 -1
     STR r1, [r0]
 
-    B LR
+    POP {r0, r1, r2, PC}
+
 .thumb_func
 sys_tick_handler:
 // call this method every millisecond, dictated by the SysTick    
     //pushe benutze register zum Stack LR 
+    PUSH {r0, r1, LR}
     LDR r0, =ms
     LDR r1, [r0]
-    ADD r1, r1, 1
+    ADD r1, r1, #1
+    STR r1, [r0]
 
-    CMP r1, 1000
-    BNE LR
+    CMP r1, #1000
+    BNE skip_update
 
-    LDR r0, =ms
-    LDR r1, [r0]
-    MOV r1, 0
+    MOV r1, #0
     STR r1, [r0]  
 
     LDR r0, =GPIO_PORT_F_DATA_R
     LDR r1, [r0]
 
-    //EOR
-    AND r2, r1, #(LED_R | LED_G | LED_B)
-    CMP r2, 0
-    BEQ activate_led
-    
-    deactivate_led:
-    BIC r1, r1, #(LED_R | LED_G | LED_B)
-    STR r1, [r0]
+    EOR r1, r1, #LED_R | LED_G | LED_B
+    STR r1, [r0]    
 
-
-    activate_led:
-    ORR r1, r1, #(LED_R | LED_G | LED_B)
-    STR r1, [r0]
-
-    B LR
-
-
-
+skip_update:
+    POP {r0, r1, PC}
 
 main: // here the actual program starts; you might want to call init_hardware
     BL init_hardware
@@ -136,12 +127,12 @@ main: // here the actual program starts; you might want to call init_hardware
 
 main_loop:
 // create an infinite loop here
-    LDR r0, =ST_CTRL_COUNT 
+    LDR r0, =ST_CTRL_R  
     LDR r1, [r0]
 
-    CMP r1, 1
-    BNE main_loop
-    
-    BL sys_tick_handler
+    ANDS r1, r1, #ST_CTRL_COUNT
+    it ne
+    BLNE sys_tick_handler
+
     B main_loop
 .end
