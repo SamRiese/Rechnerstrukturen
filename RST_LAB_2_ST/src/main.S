@@ -112,11 +112,16 @@ sys_tick_handler:
     MOV r1, #0
     STR r1, [r0]  
 
+    LDR r0, =s 
+    LDR r1, [r0]
+    ADD r1, r1, #1
+    STR r1, [r0]
+
     LDR r0, =GPIO_PORT_F_DATA_R
     LDR r1, [r0]
 
     EOR r1, r1, #LED_R | LED_G | LED_B
-    STR r1, [r0]    
+    STR r1, [r0]  
 
 skip_update:
     POP {r0, r1, PC}
