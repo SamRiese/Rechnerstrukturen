@@ -135,9 +135,42 @@ main_loop:
     LDR r0, =ST_CTRL_R  
     LDR r1, [r0]
 
+//  b check_stack
+//  b measure_time
+
     ANDS r1, r1, #ST_CTRL_COUNT
     it ne
     BLNE sys_tick_handler
 
     B main_loop
+
+measure_time:
+    LDR r0, =ST_CURRENT_R
+    LDR r1, [r0]
+
+    str r5, [sp, #-4]
+    str r5, [sp, #-4]
+    str r5, [sp, #-4]
+    str r5, [sp, #-4]
+    str r5, [sp, #-4]
+    str r5, [sp, #-4]
+    str r5, [sp, #-4]
+    str r5, [sp, #-4]
+    str r5, [sp, #-4]
+    str r5, [sp, #-4]
+    
+    LDR r2, [r0] 
+
+    SUB r3, r1, r2
+    b measure_time
+    
+
+check_stack:
+    LDR r0, =0x12345678
+    LDR r1, =123
+
+    PUSH {r3, r1}
+    PUSH {r1, r3}
+
+    b main_loop
 .end
